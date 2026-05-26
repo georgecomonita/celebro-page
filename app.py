@@ -42,25 +42,28 @@ def save_data(df):
 # --- FETCH WEBSITE CONTENT ---
 def fetch_content(url):
     try:
-        headers = {
-            "User-Agent": "Mozilla/5.0"
-        }
-
+        headers = {"User-Agent": "Mozilla/5.0"}
         response = requests.get(url, headers=headers, timeout=10)
         response.raise_for_status()
 
         soup = BeautifulSoup(response.text, "html.parser")
 
-        # Remove script/style tags
-        for script in soup(["script", "style"]):
-            script.extract()
+        # elimină zgomot
+        for tag in soup(["script", "style", "nav", "footer", "header", "aside"]):
+            tag.extract()
 
-        text = soup.get_text(separator=" ", strip=True)
+        # încearcă să ia doar articolul
+        article = soup.find("article")
 
-        return text[:10000]
+        if article:
+            text = article.get_text(separator=" ", strip=True)
+        else:
+            text = soup.get_text(separator=" ", strip=True)
+
+        return text[:12000]
 
     except Exception as e:
-        return f"Could not retrieve content from URL.\nError: {e}"
+        return f"Error: {e}"
 
 # --- GENERATE AI SUMMARY ---
 def generate_summary(text):
