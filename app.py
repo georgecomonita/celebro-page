@@ -2,11 +2,10 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 import requests
-import os
 from bs4 import BeautifulSoup
 
 # --- CONFIGURATION ---
-API_KEY = os.getenv("GROQ_API_KEY")
+API_KEY = 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"
 API_URL = "https://api.groq.com/openai/v1/chat/completions"
 
 # --- PAGE CONFIG ---
