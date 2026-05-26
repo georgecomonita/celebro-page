@@ -1,3 +1,4 @@
+import streamlit as st
 import pandas as pd
 from datetime import datetime
 import requests
@@ -5,8 +6,8 @@ from bs4 import BeautifulSoup
 
 # --- CONFIGURATION ---
 # Replace 'YOUR_API_KEY' with your actual AI API key
-API_KEY = "YOUR_API_KEY"
-API_URL = "https://api.groq.com/openai/v1/chat/completions" # Example using Groq (Very fast/free tier)
+API_KEY = "***"
+API_URL = "https://api.groq.com/openai/v1/chat/completions"
 
 st.set_page_config(page_title="Celebro Summary Hub", page_icon="🧠", layout="centered")
 
@@ -38,7 +39,7 @@ def fetch_content(url):
     try:
         res = requests.get(url, timeout=10)
         soup = BeautifulSoup(res.text, 'html.parser')
-        return soup.get_text()[:10000] # Limit text for AI context
+        return soup.get_text()[:10000]
     except:
         return "Could not retrieve content from URL."
 
@@ -65,7 +66,6 @@ if submit and url_input:
         content = fetch_content(url_input)
         summary = generate_summary(content)
         
-        # Save to "Permanent" storage
         df = load_data()
         new_entry = pd.DataFrame([[datetime.now().strftime("%Y-%m-%d %H:%M"), url_input, summary]], 
                                  columns=["Date", "URL", "Summary"])
@@ -79,4 +79,10 @@ st.write("### 📚 Previous Summaries")
 df_history = load_data()
 
 if not df_history.empty:
-    for index, row in df_history.iloc[::-1].iterrows(): 
+    for index, row in df_history.iloc[::-1].iterrows():
+        st.markdown(f"""
+            <div class="summary-card">
+                <small style="color: gray;">{row['Date']}</small><br>
+                <a href="{row['URL']}" target="_blank"><b>Source Link</b></a>
+                <p style="margin-top:10px;">{row['Summary']}</p>
+            </div>
