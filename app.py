@@ -1,4 +1,3 @@
-<code class="language-python">import streamlit as st
 import pandas as pd
 from datetime import datetime
 import requests
@@ -80,4 +79,4 @@ st.write("### 📚 Previous Summaries")
 df_history = load_data()
 
 if not df_history.empty:
-    for index, row in df_history.iloc[::-1].iterrows(): # Show newest first</code>
+    for index, row in df_history.iloc[::-1].iterrows(): 
