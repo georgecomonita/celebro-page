@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 import os
 
 # --- CONFIGURATION ---
-API_KEY = os.getenv("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")
+API_KEY = os.getenv("GROQ_API_KEY")
 API_URL = "https://api.groq.com/openai/v1/chat/completions"
 
 # --- PAGE CONFIG ---
