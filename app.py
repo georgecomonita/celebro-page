@@ -1,30 +1,19 @@
-import streamlit as st
+<code class="language-python">import streamlit as st
 import pandas as pd
 from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
 
 # --- CONFIGURATION ---
-# Replace 'YOUR_API_KEY' with your actual AI API key
 API_KEY = "***"
 API_URL = "https://api.groq.com/openai/v1/chat/completions"
 
 st.set_page_config(page_title="Celebro Summary Hub", page_icon="🧠", layout="centered")
 
-# Custom CSS for a "Masterpiece" look (Mobile optimized)
-st.markdown("""
-    <style>
-    .main { background-color: #f8f9fa; }
-    .stButton>button { width: 100%; border-radius: 20px; background-color: #ef1a2d; color: white; }
-    .summary-card { 
-        background: white; padding: 20px; border-radius: 15px; 
-        border-left: 5px solid #ef1a2d; margin-bottom: 20px; 
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    }
-    </style>
-    """, unsafe_allow_html=True)
+# Custom CSS
+st.markdown("<style>.stButton>button { width: 100%; border-radius: 20px; background-color: #ef1a2d; color: white; }</style>", unsafe_allow_html=True)
 
-# --- DATABASE (Simple CSV for permanence) ---
+# --- DATABASE ---
 def load_data():
     try:
         return pd.read_csv("summaries.csv")
@@ -47,11 +36,14 @@ def generate_summary(text):
     headers = {"Authorization": f"Bearer {API_KEY}", "Content-Type": "application/json"}
     payload = {
         "model": "llama3-8b-8192", 
-        "messages": [{"role": "system", "content": "You are Celebro, a professional AI. Provide a concise, high-quality summary of the following content."},
+        "messages": [{"role": "system", "content": "You are Celebro. Provide a concise summary."},
                      {"role": "user", "content": text}]
     }
-    response = requests.post(API_URL, json=payload, headers=headers)
-    return response.json()['choices'][0]['message']['content']
+    try:
+        response = requests.post(API_URL, json=payload, headers=headers)
+        return response.json()['choices'][0]['message']['content']
+    except:
+        return "AI Error: Please check your API Key."
 
 # --- UI ---
 st.title("🧠 Celebro Summary Hub")
@@ -80,9 +72,9 @@ df_history = load_data()
 
 if not df_history.empty:
     for index, row in df_history.iloc[::-1].iterrows():
-        st.markdown(f"""
-            <div class="summary-card">
-                <small style="color: gray;">{row['Date']}</small><br>
-                <a href="{row['URL']}" target="_blank"><b>Source Link</b></a>
-                <p style="margin-top:10px;">{row['Summary']}</p>
-            </div>
+        st.write(f"**{row['Date']}** - [{row['URL']}]({row['URL']})")
+        st.write(row['Summary'])
+        st.divider()
+else:
+    st.info("No summaries yet. Paste a link above to start!")
+</code>
