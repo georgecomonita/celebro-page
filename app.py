@@ -5,7 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 
 # --- CONFIGURATION ---
-API_KEY = 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"
+API_KEY = "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"
 API_URL = "https://api.groq.com/openai/v1/chat/completions"
 
 # --- PAGE CONFIG ---
